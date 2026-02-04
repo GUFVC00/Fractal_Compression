@@ -31,7 +31,7 @@ def match_size(img, d_size, r_size, stride):
     factor = d_size // r_size
     d_small = []
     
-    # Pre-allocate to save memory/time
+    # Pre-allocate 
     # We step through the image and immediately downscale
     for k in range(0, img.shape[0] - d_size + 1, stride):
         for l in range(0, img.shape[1] - d_size + 1, stride):
@@ -48,7 +48,7 @@ def match_size(img, d_size, r_size, stride):
 
 def encoding(img, d_size, r_size, stride):
     ifs = []
-    # 1. Pre-process all domain blocks ONCE
+    # Pre-process all domain blocks 
     d_small = match_size(img, d_size, r_size, stride)
     
     i_r = img.shape[0] // r_size
@@ -68,9 +68,7 @@ def encoding(img, d_size, r_size, stride):
             
             # Search through pre-computed Domain blocks
             for k, l,t_id, D, sum_d, sum_dd, D_flat in d_small:
-                
-                # Optimized contrast/brightness calculation inline
-                # We reuse sum_d and sum_dd from the list!
+     
                 sum_rd = np.sum(R_flat * D_flat)
                 
                 denominator = n * sum_dd - sum_d ** 2
@@ -106,7 +104,6 @@ def decoding(ifs, d_size, r_size, stride, n_iter=8):
                 # Extract block from previous iteration
                 block = J[-1][k:k + d_size, l:l + d_size]
                 
-                # Handle edge cases where block might be smaller (though shouldn't happen with correct logic)
                 if block.shape != (d_size, d_size):
                     continue
                 
