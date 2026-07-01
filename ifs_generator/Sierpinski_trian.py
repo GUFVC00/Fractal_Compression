@@ -9,7 +9,7 @@ s = np.zeros((N, N), dtype=int)
 # IFS transformations (a,b,c,d,e,f)
 ifs = [
     (0.5, 0, 0, 0.5, 1, 1),
-    (0.5, 0, 0, 0.5, 50, 1),
+    (0.5, 0, 0, 0.5, 1, 50),
     (0.5, 0, 0, 0.5, 50, 50)
 ]
 
@@ -18,6 +18,7 @@ t[0, :] = 1
 t[-1, :] = 1
 t[:, 0] = 1
 t[:, -1] = 1
+
 
 # Number of iterations
 iterations = 20

@@ -2,6 +2,10 @@ import numpy as np
 import math
 import matplotlib.image as mpimg
 import matplotlib.pyplot as plt
+import time
+import pandas as pd
+import os
+
 
 
 def get_greyscale_image(img):                        #Guarantee that the figure is on grayscale
@@ -47,8 +51,9 @@ def match_size(img, d_size, r_size, stride):
     return d_small
 
 def encoding(img, d_size, r_size, stride):
+    encd_time = time.perf_counter()
     ifs = []
-    # 1. Pre-process all domain blocks ONCE
+    # Pre-process all domain blocks 
     d_small = match_size(img, d_size, r_size, stride)
     
     i_r = img.shape[0] // r_size
@@ -70,7 +75,7 @@ def encoding(img, d_size, r_size, stride):
             for k, l,t_id, D, sum_d, sum_dd, D_flat in d_small:
                 
                 # Optimized contrast/brightness calculation inline
-                # We reuse sum_d and sum_dd from the list!
+                # Reuse sum_d and sum_dd 
                 sum_rd = np.sum(R_flat * D_flat)
                 
                 denominator = n * sum_dd - sum_d ** 2
@@ -87,10 +92,11 @@ def encoding(img, d_size, r_size, stride):
                 if error < min_error:
                     min_error = error
                     ifs[i][j] = (k, l,t_id, s, o)
-                    
+    finish_encd = time.perf_counter()               
     return ifs
 
 def decoding(ifs, d_size, r_size, stride, n_iter=8):
+    dec_time = time.perf_counter()
     factor = d_size // r_size
     h = len(ifs) * r_size
     w = len(ifs[0]) * r_size
@@ -118,7 +124,7 @@ def decoding(ifs, d_size, r_size, stride, n_iter=8):
                 I[i*r_size:(i+1)*r_size, j*r_size:(j+1)*r_size] = np.clip(Im_rec, 0.0, 1.0)
         
         J.append(I)
-    
+    finish_dec = time.perf_counter()
     return J
 
 def plot_iterations(iterations, target=None):
@@ -148,7 +154,7 @@ def test_greyscale():
     #img[24:40, 24:40] = 0.5 
 
    
-    img = mpimg.imread('figures/test2.png')
+    img = mpimg.imread('figures/test8.png')
     if len(img.shape) > 2:
          img = get_greyscale_image(img)
          img = downscale(img,8)
@@ -165,6 +171,14 @@ def test_greyscale():
     
     plot_iterations(iterations, img)
     plt.show()
+
+
+
+
+
+
+
+
 
 if __name__ == "__main__":
     test_greyscale()
