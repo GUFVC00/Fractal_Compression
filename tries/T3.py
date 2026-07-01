@@ -35,7 +35,7 @@ def match_size(img, d_size, r_size, stride):
     factor = d_size // r_size
     d_small = []
     
-    # Pre-allocate to save memory/time
+    # Pre-allocate 
     # We step through the image and immediately downscale
     for k in range(0, img.shape[0] - d_size + 1, stride):
         for l in range(0, img.shape[1] - d_size + 1, stride):
@@ -112,7 +112,6 @@ def decoding(ifs, d_size, r_size, stride, n_iter=8):
                 # Extract block from previous iteration
                 block = J[-1][k:k + d_size, l:l + d_size]
                 
-                # Handle edge cases where block might be smaller (though shouldn't happen with correct logic)
                 if block.shape != (d_size, d_size):
                     continue
                 
